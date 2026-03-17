@@ -26,7 +26,7 @@
       "@pages/*": ["app/pages/*"],
       "@assets/*": ["app/assets/*"],
       "@styles/*": ["app/styles/*"],
-      "@services/*": ["app/styles/*"],
+      "@services/*": ["app/services/*"],
       "@types/*": ["app/types/*"],
       "@models/*": ["app/models/*"],
       "@layouts/*": ["app/layouts/*"]

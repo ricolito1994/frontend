@@ -1,5 +1,4 @@
 /*
- * License @AutoLigtas Systems (C) 2025
  *
  * This is an abstract class
  * pre requisite:
