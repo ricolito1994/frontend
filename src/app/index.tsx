@@ -12,6 +12,10 @@ import LoadingLayout from '@layouts/LoadingLayout'
 import MainLayout from '@layouts/MainLayout'
 import LoginLayout from '@layouts/LoginLayout'
 
+import Dashboard from "@pages/Dashboard"
+import IpManagerPage from "@pages/IpManagerPage"
+import LogsPage from "@pages/LogsPage"
+
 import '@styles/index.css';
 
 const App = (): React.ReactElement => {
@@ -59,11 +63,14 @@ const App = (): React.ReactElement => {
             <LoadingLayout isLoading={isLoading}>
                 <Routes>
                     <Route element={renderLayout()}>
-                        <Route path="/" element={<>Dkc</>} />
-                        <Route path='ipmanager' element={<>ip</>} />
-                        <Route path='logs' element={<>logs</>} />
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path='ipmanager' element={<IpManagerPage />} />
+                        
+                        {user?.user?.designation === 'Super Admin' ?
+                            <Route path='logs' element={<LogsPage />} /> : <></>}
+                        
+                        <Route path="*" element={<>Not found</>} />
                     </Route>
-                    <Route path="*" element={<>Not found</>} />
                 </Routes>
             </LoadingLayout>
         </div>

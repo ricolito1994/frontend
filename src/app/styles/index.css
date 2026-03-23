@@ -113,3 +113,77 @@ li a {
 .login-card {
   width: 350px;
 }
+
+/*SPA CONTAINER*/
+
+.main-spa-container {
+  height:100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-spa-container .page-title {
+  font-weight: bold;
+  font-size: 15px;
+  width:99%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 5%;
+  padding-left:1%;
+  background-color: #ccc;
+}
+
+.main-spa-container .page-content {
+  height:95%;
+  top: 1%;
+  position:relative;
+}
+
+/* data table */
+.data-table {
+  height:100%;
+}
+
+.datatable-filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 7%;
+}
+
+.data-table-container {
+  height : 85%;
+}
+
+.paginator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1%;
+  width: 100%;
+}
+
+.paginator .buttons {
+  display: flex;
+  flex: 2;
+}
+
+.paginator .buttons .buttons-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paginator .total-number-of-items {
+  display: flex;
+  flex: 1.6;
+}
+
+
+.css-var-root.ant-table-css-var.ant-table-wrapper.css-dev-only-do-not-override-1daqxe2{
+  height:100%;
+  background-color: #ccccccb8;
+  border-radius: 1%;
+}

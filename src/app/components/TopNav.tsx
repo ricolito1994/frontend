@@ -11,6 +11,8 @@ import {
     LogoutOutlined
 } from '@ant-design/icons'
 
+import { UserLogin } from '@models/user.model';
+
 import AuthenticationService from '../services/AuthenticationService';
 
 const TopNav: React.FC <any> = (): React.ReactElement => {
@@ -24,15 +26,32 @@ const TopNav: React.FC <any> = (): React.ReactElement => {
 
     const [api, contextHolder] = notification.useNotification();
 
-    const logoutService = new AuthenticationService(user?.access_token ?? null)
+
+    const onRefreshToken = (data: UserLogin) => {
+        setUser((prev: UserLogin) => ({
+            ...prev,
+            access_token: data.access_token,
+            refresh_token: data.refresh_token
+        }))
+    }
+
+    const logoutService = new AuthenticationService(
+        user?.access_token ?? null, 
+        null, 
+        user?.refresh_token,
+        onRefreshToken
+    )
 
     useEffect(()=> {
+        
     }, [])
 
     const logout = async () => {
         try {
             setIsProcessing(true)
-            await logoutService.logout({})
+            await logoutService.logout({
+                "user_id" : user.user.id
+            })
             setUser(null)
             localStorage.removeItem('user')
         } catch (e:any) {

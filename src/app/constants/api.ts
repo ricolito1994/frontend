@@ -42,36 +42,29 @@ const BASE_URL = import.meta.env.VITE_APP_BASE_URL ?? '';
 *
 */
 const AUTH: Object = {
-    'login'     : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/auth/login`,      req: "post"}),
-    'logout'    : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/auth/logout`,     req: "post"}),
-    'refresh'   : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/auth/refreshAccessToken`,    req: "post"}), 
-    'me'        : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/auth/me`,         req: "post"}),                  
-}
-
-const IP_MANAGER: Object = {
-    'index'   : ()           :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager`,       req: "get"}),
-    'store'   : ()           :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager`,       req: "post"}),
-    'show'    : (id: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager/${id}`, req: "get"}),
-    'patch'   : (id: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager/${id}`, req: "patch"}), 
-    'delete'  : (id: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager/${id}`, req: "delete"}),                  
+    'login'     : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/login`,      req: "post"}),
+    'logout'    : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/logout`,     req: "post"}),
+    'refresh'   : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/refreshAccessToken`,    req: "post"}), 
+    'me'        : () :   HTTPEnpointType => ({endpoint: `${BASE_URL}/me`,         req: "post"}),
+    'findUser'  : (userId: number)  :   HTTPEnpointType => ({endpoint: `${BASE_URL}/user/${userId}`, req: "get"}),         
 }
 
 const LOG: Object = {
-    'index'   : ()           :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager`,       req: "get"}),
-    'store'   : ()           :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager`,       req: "post"}),
-    'show'    : (id: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager/${id}`, req: "get"}),
-    'patch'   : (id: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager/${id}`, req: "patch"}), 
-    'delete'  : (id: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ipmanager/${id}`, req: "delete"}),                  
+    'index'   : (page: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/logs?page=${page}`,  req: "get"}),
+    'store'   : ()             :   HTTPEnpointType => ({endpoint: `${BASE_URL}/logs`,       req: "post"}),
+    'show'    : (id: Number)   :   HTTPEnpointType => ({endpoint: `${BASE_URL}/logs/${id}`, req: "get"}),
+    'patch'   : (id: Number)   :   HTTPEnpointType => ({endpoint: `${BASE_URL}/logs/${id}`, req: "patch"}), 
+    'delete'  : (id: Number)   :   HTTPEnpointType => ({endpoint: `${BASE_URL}/logs/${id}`, req: "delete"}),                  
 }
 
-/*
- * I added to export BASE_URL just in case
- * If you want to import this to your service class
- * you can do is import { API } from 'app/constants/api' 
- * if you want to include the BASE_URL
- * import { API, BASE_URL } from 'app/constants/api'
- * 
-*/
+const IP_MANAGER: Object = {
+    'index'   : (page: Number):   HTTPEnpointType => ({endpoint: `${BASE_URL}/ip/${page}`,  req: "get"}),
+    'store'   : (userId: Number):   HTTPEnpointType => ({endpoint: `${BASE_URL}/ip/create/${userId}`,req: "post"}),
+    'show'    : (id: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ip/find/${id}`, req: "get"}),
+    'patch'   : (id: Number, userId: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ip/update/${id}/${userId}`, req: "patch"}), 
+    'delete'  : (id: Number, userId: Number) :   HTTPEnpointType => ({endpoint: `${BASE_URL}/ip/delete/${id}/${userId}`, req: "delete"}),                  
+}
+
 export { 
     AUTH,
     IP_MANAGER,

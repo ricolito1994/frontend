@@ -36,22 +36,52 @@ import {
     HTTPMethod, 
     HTTPEnpointType
 } 
-from "../models/api.model";
+from "@models/api.model";
 
 export abstract class AbstractApiService implements HTTPRequestableInterface 
 {
     public abortController: any;
     public abortControllerSignal: any | null;
-    public accessToken: string | null;
+    public accessToken: string |undefined|null;
     public apiClient: AxiosInstance;
-    public baseUrl: string|undefined;
+    public baseUrl: string|undefined|null;
+    public refreshToken: string|undefined|null;
     public methodMap: Record<HTTPMethod, Function>;
+    public onAuthTokenUpdate: Function | undefined | null;
 
-    constructor(accessToken: string|null, baseURL? : string) {
+    public constructor(
+        accessToken: string|undefined|null, 
+        baseURL? : string|undefined|null, 
+        refreshToken? : string|undefined|null,
+        onAuthTokenUpdate? : (data:any) => void
+    ) {
         this.accessToken = accessToken;
         this.baseUrl = baseURL ?? (import.meta.env.VITE_APP_BASE_URL ?? '');
         this.apiClient = (this.accessToken === '' || ! this.accessToken) ? 
         this.getApiClientWithoutAuthentication() : this.getApiClient();
+        this.refreshToken = refreshToken ?? null;
+        this.onAuthTokenUpdate = onAuthTokenUpdate
+
+        this.apiClient.interceptors.response.use(
+            response => response,
+            async error => {
+                if (this.refreshToken && error.response?.data?.status === "Token is Expired") {
+                    try {
+                        await this.refreshAccessTokenOnTheGo();
+                        
+                        // retry request
+                        const config = error.config;
+                        config.headers['Authorization'] = `Bearer ${this.accessToken}`
+                        return this.apiClient.request(config)
+
+                    } catch (e) {
+                        return Promise.reject(e)
+                    }
+                }
+                return Promise.reject(error)
+            }
+        );
+
         this.methodMap = {
             get     : this.apiClient.get.bind(this.apiClient),
             post    : this.apiClient.post.bind(this.apiClient),
@@ -59,6 +89,29 @@ export abstract class AbstractApiService implements HTTPRequestableInterface
             delete  : this.apiClient.delete.bind(this.apiClient),
         };
     }
+
+    protected async refreshAccessTokenOnTheGo() : Promise<void>
+    {
+        if (! this.refreshToken) throw new Error ("No refresh token found")
+
+        try {
+            const response = await axios.post (`${this.baseUrl}/refreshtoken`, {
+                'refresh_token' : this.refreshToken
+            })
+
+            this.accessToken = response.data.access_token
+
+            this.refreshToken = response.data.refresh_token
+
+            if (this.onAuthTokenUpdate) {
+                this.onAuthTokenUpdate(response.data)
+            }
+
+        } catch (e) {
+            throw e;
+        }
+    }
+
     /**
      * 
      * @returns AxiosInstance
@@ -70,7 +123,7 @@ export abstract class AbstractApiService implements HTTPRequestableInterface
      */
     protected getApiClientWithoutAuthentication(): AxiosInstance {
         return axios.create({
-            baseURL: this.baseUrl,
+            baseURL: this.baseUrl ?? '',
             headers: {
                 'Content-type': 'application/json',
                 Accept: 'application/json',
@@ -85,7 +138,7 @@ export abstract class AbstractApiService implements HTTPRequestableInterface
      */
     protected getApiClient(): AxiosInstance {
         return axios.create({
-            baseURL: this.baseUrl,
+            baseURL: this.baseUrl ?? '',
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Content-type': 'application/json',

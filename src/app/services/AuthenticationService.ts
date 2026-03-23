@@ -5,8 +5,13 @@ export default class AuthenticationService extends AbstractApiService {
 
     protected auth: any;
 
-    constructor (accessToken: string|null) {
-        super (accessToken)
+    constructor (
+        accessToken: string|undefined|null, 
+        baseURL? : string|undefined|null, 
+        refreshToken? : string|undefined|null,
+        onAuthTokenUpdate? : (data:any) => void
+    ) {
+        super (accessToken, baseURL, refreshToken, onAuthTokenUpdate)
         this.auth = AUTH;
     }
 
@@ -42,6 +47,15 @@ export default class AuthenticationService extends AbstractApiService {
             let response = await this.requestV2<T>(this.auth.me(), data, config);
             return response?.data
         } catch (e) {
+            throw e;
+        }
+    }
+
+     async findUser <T=any> (userId: number, data: any, config?: any) {
+        try {
+            let response = await this.requestV2<T>(this.auth.findUser(userId), data, config);
+            return response?.data
+        } catch (e: any) {
             throw e;
         }
     }
