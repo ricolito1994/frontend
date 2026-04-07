@@ -38,13 +38,16 @@ const App = (): React.ReactElement => {
     }, [])
 
     useEffect(() => {
-        if (user) {
+        if (user && user?.user) {
             localStorage.setItem('user', JSON.stringify(user))
         } else {
             // restore user from local storage if it exists
             let storedUser = localStorage.getItem('user');
             if (storedUser) {
-                setUser(JSON.parse(storedUser))
+                let parsed = JSON.parse(storedUser);
+
+                if (parsed && parsed.user)
+                    setUser(JSON.parse(storedUser))
             }
         }
         navigate('/')
@@ -52,7 +55,10 @@ const App = (): React.ReactElement => {
 
     const renderLayout: any = (): React.ReactElement => {
         let auth = localStorage.getItem('user');
-        return auth ? <MainLayout /> : <LoginLayout />
+
+        let parsed = auth ? JSON.parse(auth ?? '') : {};
+
+        return (parsed && parsed.user) ? <MainLayout /> : <LoginLayout />
     }
     
     return (
